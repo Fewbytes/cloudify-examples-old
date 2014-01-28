@@ -1,0 +1,74 @@
+#######
+# Types and implementation details.
+#
+# Virtual machine is started using Cloudify's built-in Vagrant plugin.
+# Python simple HTTP server is started using Cloudify's Python web server plugin
+# which can be found here: https://github.com/CloudifySource/cosmo-plugin-python-webserver
+#
+
+# cloudify.types contains Cloudify's built-in types, relationships, workflows etc...
+# vagrant_host_provisioner contains Cloudify's built-in Vagrant plugin definition.
+
+
+imports:
+    - cloudify.types
+    - vagrant_host_provisioner
+
+# Python web server plugin definition with a specification to run in an agent vm.
+# Plugin will be downloaded and installed from the provided url.
+plugins:
+    python_webserver_installer:
+        derived_from: cloudify.plugins.agent_plugin
+        properties:
+            url: https://github.com/CloudifySource/cosmo-plugin-python-webserver/archive/develop.zip
+
+types:        
+    vagrant_host:
+        derived_from: cloudify.types.host       
+        properties:
+            -   install_agent: true
+            -   provider: lxc
+            -   ssh_conf:
+                    host: '10.0.3.5'
+                    port: '22' # needed since the default port for the vagrant monitor uses 2222(virtual box)
+                    nic:  'eth0'
+            -   vagrant_file: |
+                    Vagrant.configure("2") do |config|
+                      config.vm.box = "precise64"
+                      config.vm.provision :shell, :inline => "sudo apt-get -y install ufw && sudo ufw disable"
+                      config.vm.network "forwarded_port", guest: 8080, host: 8080
+                      config.vm.provider :lxc do |lxc|
+                        lxc.customize 'network.ipv4', '10.0.3.5'
+                      end
+                    end
+            -   worker_config:
+                    user: 'vagrant'
+                    port: '22'
+                    key: '~/.vagrant.d/insecure_private_key'                
+                    env:
+                      VAGRANT_DEFAULT_PROVIDER: 'lxc'
+        interfaces:
+            cloudify.interfaces.lifecycle:
+                -   create: cloudify.plugins.vagrant_host_provisioner.tasks.provision
+                -   start: cloudify.plugins.vagrant_host_provisioner.tasks.start
+        policies:
+            -   name: start_detection_policy
+                rules:
+                    -   type: state_equals
+                        properties:
+                            service: vagrant machine status
+                            state: running
+
+    web_server:
+        derived_from: cloudify.types.web_server
+        interfaces:
+            cloudify.interfaces.lifecycle:
+                -   configure: python_webserver_installer.tasks.configure
+                -   start: python_webserver_installer.tasks.start
+        policies:
+            -   name: start_detection_policy
+                rules:
+                    -   type: state_equals
+                        properties:
+                            service: webserver status
+                            state: running
