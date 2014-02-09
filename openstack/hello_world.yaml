@@ -69,5 +69,3 @@ type_implementations:
     http_web_server_web_server_impl:
         type: web_server
         node_ref: http_web_server
-        properties:
-            port: 8080
