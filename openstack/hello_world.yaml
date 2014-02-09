@@ -26,25 +26,46 @@ types:
         derived_from: cloudify.types.host
         properties:
             -   install_agent: true
-            -   worker_config:
-                    user: ubuntu
-                    port: 22
-                    key: ~/.ssh/cloudify-agents-kp.pem
-            -   nova_config:
-                    region: region-b.geo-1
-                    instance:
-                        name: hello_world_web_server_vm
-                        image: 8c096c29-a666-4b82-99c4-c77dc70cfb40
-                        flavor: 101
-                        key_name: cloudify-agents-kp
+            -   worker_config
+            -   nova_config
         interfaces:
             cloudify.interfaces.lifecycle:
                 -   create: cloudify.plugins.openstack_host_provisioner.tasks.provision
                 -   start: cloudify.plugins.openstack_host_provisioner.tasks.start
     web_server:
         derived_from: cloudify.types.web_server
+        properties:
+            -   port
         interfaces:
             cloudify.interfaces.lifecycle:
                 -   configure: python_webserver_installer.tasks.configure
                 -   start: python_webserver_installer.tasks.start
-                
+
+
+# Uncomment nova_config below and fill in the place holders 
+# with the proper configuration. also, make sure worker_config.key matches 
+# the filename created (or used) during the bootstrap process
+
+type_implementations:
+
+    vm_openstack_host_impl:
+        type: openstack_host
+        node_ref: vm
+        properties:
+            worker_config:
+                user: ubuntu
+                port: 22
+                # example for ssh key file (see `key_name` below) 
+                # this file matches the agent key configured during the bootstrap
+                key: ~/.ssh/cloudify-agents-kp.pem
+            # nova_config:
+            #     region: ### OPENSTACK_REGION
+            #     instance:
+            #         name: ### HOST_NAME
+            #         image: ### IMAGE_ID
+            #         flavor: ### FLAVOR 
+            #         key_name: ### KEY_PAIR_NAME
+
+    http_web_server_web_server_impl:
+        type: web_server
+        node_ref: http_web_server

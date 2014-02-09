@@ -12,10 +12,10 @@ blueprint:
     name: hello_world
     topology:
         -   name: vm
-            type: openstack_host
+            type: cloudify.types.host
 
         -   name: http_web_server
-            type: web_server
+            type: cloudify.types.web_server
             properties:
                 port: 8080
             relationships:
