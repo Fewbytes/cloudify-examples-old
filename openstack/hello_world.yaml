@@ -30,8 +30,8 @@ types:
             -   nova_config
         interfaces:
             cloudify.interfaces.lifecycle:
-                -   create: cloudify.plugins.openstack_host_provisioner.tasks.provision
-                -   start: cloudify.plugins.openstack_host_provisioner.tasks.start
+                -   create: openstack_host_provisioner.tasks.provision
+                -   start: openstack_host_provisioner.tasks.start
     web_server:
         derived_from: cloudify.types.web_server
         properties:
