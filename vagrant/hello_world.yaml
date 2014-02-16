@@ -51,6 +51,8 @@ types:
             cloudify.interfaces.lifecycle:
                 -   create: cloudify.plugins.vagrant_host_provisioner.tasks.provision
                 -   start: cloudify.plugins.vagrant_host_provisioner.tasks.start
+                -   stop: cloudify.plugins.vagrant_host_provisioner.tasks.stop
+                -   terminate: cloudify.plugins.vagrant_host_provisioner.tasks.terminate
 
     web_server:
         derived_from: cloudify.types.web_server
@@ -58,3 +60,4 @@ types:
             cloudify.interfaces.lifecycle:
                 -   configure: python_webserver_installer.tasks.configure
                 -   start: python_webserver_installer.tasks.start
+                -   stop: python_webserver_installer.tasks.stop
