@@ -32,6 +32,8 @@ types:
             cloudify.interfaces.lifecycle:
                 -   create: openstack_host_provisioner.tasks.provision
                 -   start: openstack_host_provisioner.tasks.start
+                -   stop: openstack_host_provisioner.tasks.stop
+                -   terminate: openstack_host_provisioner.tasks.terminate
     web_server:
         derived_from: cloudify.types.web_server
         properties:
@@ -40,6 +42,7 @@ types:
             cloudify.interfaces.lifecycle:
                 -   configure: python_webserver_installer.tasks.configure
                 -   start: python_webserver_installer.tasks.start
+                -   stop: python_webserver_installer.tasks.stop
 
 
 # Uncomment nova_config below and fill in the place holders 
