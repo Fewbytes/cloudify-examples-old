@@ -11,11 +11,14 @@
 
 imports:
     - cloudify.types
-    - openstack_host_provisioner
 
 # Python web server plugin definition with a specification to run in an agent vm.
 # Plugin will be downloaded and installed from the provided url.
 plugins:
+    nova_plugin:
+        derived_from: cloudify.plugins.manager_plugin
+        properties:
+            url: https://github.com/CloudifySource/cloudify-openstack-plugin/archive/develop.zip
     python_webserver_installer:
         derived_from: cloudify.plugins.agent_plugin
         properties:
@@ -30,10 +33,11 @@ types:
             -   nova_config
         interfaces:
             cloudify.interfaces.lifecycle:
-                -   create: openstack_host_provisioner.tasks.provision
-                -   start: openstack_host_provisioner.tasks.start
-                -   stop: openstack_host_provisioner.tasks.stop
-                -   terminate: openstack_host_provisioner.tasks.terminate
+                -   start: nova_plugin.server.start
+                -   stop: nova_plugin.server.stop
+                -   delete: nova_plugin.server.delete
+            cloudify.interfaces.host:
+                -   get_state: nova_plugin.server.get_state
     web_server:
         derived_from: cloudify.types.web_server
         properties:
@@ -61,13 +65,11 @@ type_implementations:
                 # example for ssh key file (see `key_name` below) 
                 # this file matches the agent key configured during the bootstrap
                 key: ~/.ssh/cloudify-agents-kp.pem
-            # nova_config:
-            #     region: ### OPENSTACK_REGION
-            #     instance:
-            #         name: ### HOST_NAME
-            #         image: ### IMAGE_ID
-            #         flavor: ### FLAVOR 
-            #         key_name: ### KEY_PAIR_NAME
+            #server:
+            #    name:          ### HOST_NAME
+            #    image_name:    ### IMAGE_ID
+            #    flavor_name:   ### FLAVOR 
+            #    key_name:      ### KEY_PAIR_NAME
 
     http_web_server_web_server_impl:
         type: web_server
