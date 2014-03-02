@@ -30,7 +30,7 @@ types:
         properties:
             -   install_agent: true
             -   worker_config
-            -   nova_config
+            -   server
         interfaces:
             cloudify.interfaces.lifecycle:
                 -   start: nova_plugin.server.start
@@ -49,7 +49,7 @@ types:
                 -   stop: python_webserver_installer.tasks.stop
 
 
-# Uncomment nova_config below and fill in the place holders 
+# Uncomment 'server' below and fill in the place holders 
 # with the proper configuration. also, make sure worker_config.key matches 
 # the filename created (or used) during the bootstrap process
 
