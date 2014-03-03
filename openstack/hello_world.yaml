@@ -10,34 +10,17 @@
 # openstack_host_provisioner contains Cloudify's built-in OpenStack plugin definition.
 
 imports:
-    - cloudify.types
+    - cloudify.openstack
 
 # Python web server plugin definition with a specification to run in an agent vm.
 # Plugin will be downloaded and installed from the provided url.
 plugins:
-    nova_plugin:
-        derived_from: cloudify.plugins.manager_plugin
-        properties:
-            url: https://github.com/CloudifySource/cloudify-openstack-plugin/archive/develop.zip
     python_webserver_installer:
         derived_from: cloudify.plugins.agent_plugin
         properties:
             url: https://github.com/CloudifySource/cosmo-plugin-python-webserver/archive/develop.zip
 
 types:
-    openstack_host:
-        derived_from: cloudify.types.host
-        properties:
-            -   install_agent: true
-            -   worker_config
-            -   server
-        interfaces:
-            cloudify.interfaces.lifecycle:
-                -   start: nova_plugin.server.start
-                -   stop: nova_plugin.server.stop
-                -   delete: nova_plugin.server.delete
-            cloudify.interfaces.host:
-                -   get_state: nova_plugin.server.get_state
     web_server:
         derived_from: cloudify.types.web_server
         properties:
@@ -56,9 +39,10 @@ types:
 type_implementations:
 
     vm_openstack_host_impl:
-        type: openstack_host
+        type: cloudify.openstack.server
         node_ref: vm
         properties:
+            install_agent: true
             worker_config:
                 user: ubuntu
                 port: 22
