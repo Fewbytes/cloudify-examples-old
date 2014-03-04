@@ -7,7 +7,7 @@
 #
 
 # cloudify.types contains Cloudify's built-in types, relationships, workflows etc...
-# openstack_host_provisioner contains Cloudify's built-in OpenStack plugin definition.
+# cloudify.openstack contains Cloudify's built-in openstack types and plugins definitions.
 
 imports:
     - cloudify.openstack
