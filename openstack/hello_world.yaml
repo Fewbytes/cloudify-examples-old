@@ -32,11 +32,11 @@ types:
                 -   stop: python_webserver_installer.tasks.stop
 
 
-# Uncomment 'server' below and fill in the place holders 
-# with the proper configuration. also, make sure worker_config.key matches 
-# the filename created (or used) during the bootstrap process
-
 type_implementations:
+
+    # Uncomment 'server' below and fill in the place holders 
+    # with the proper configuration. also, make sure worker_config.key matches 
+    # the filename created (or used) during the bootstrap process
 
     vm_openstack_host_impl:
         type: cloudify.openstack.server
