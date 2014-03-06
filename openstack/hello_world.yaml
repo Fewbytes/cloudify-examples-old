@@ -49,11 +49,20 @@ type_implementations:
                 # example for ssh key file (see `key_name` below) 
                 # this file matches the agent key configured during the bootstrap
                 key: ~/.ssh/cloudify-agents-kp.pem
+            # Uncomment and update `management_network_name` when working a n neutron enabled openstack
+            # management_network_name: cloudify-admin-network
             #server:
-            #    name:          ### HOST_NAME
-            #    image_name:    ### IMAGE_ID
-            #    flavor_name:   ### FLAVOR 
-            #    key_name:      ### KEY_PAIR_NAME
+
+                ### if defined, will serve as the hostname for the started instance,
+                ### otherwise, the node_id will be used
+                #name:             ### HOST_NAME
+
+                # image_name:      ### IMAGE_NAME
+                # flavor_name:     ### FLAVOR_NAME
+                # key_name:        ### KEY_NAME
+
+                ### uncomment this when working with specific security groups
+                # security_groups: ### SECURITY_GROUPS (['default'] or ['cloudify-sg-agents'] etc...)
 
     http_web_server_web_server_impl:
         type: web_server
