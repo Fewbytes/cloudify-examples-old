@@ -18,7 +18,7 @@ plugins:
     python_webserver_installer:
         derived_from: cloudify.plugins.agent_plugin
         properties:
-            url: https://github.com/CloudifySource/cosmo-plugin-python-webserver/archive/develop.zip
+            url: https://github.com/CloudifySource/cosmo-plugin-python-webserver/archive/feature/CFY-279-system-test-of-hello-world.zip
 
 types:
     web_server:
