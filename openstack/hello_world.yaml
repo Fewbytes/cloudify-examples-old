@@ -25,6 +25,7 @@ types:
         derived_from: cloudify.types.web_server
         properties:
             -   port
+            -   image_path
         interfaces:
             cloudify.interfaces.lifecycle:
                 -   configure: python_webserver_installer.tasks.configure
