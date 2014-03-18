@@ -18,6 +18,7 @@ blueprint:
             type: web_server
             properties:
                 port: 8080
+                image_path: images/cloudify-logo.png
             relationships:
                 -   type: cloudify.relationships.contained_in
                     target: vm

@@ -61,3 +61,6 @@ types:
                 -   configure: python_webserver_installer.tasks.configure
                 -   start: python_webserver_installer.tasks.start
                 -   stop: python_webserver_installer.tasks.stop
+        properties:
+            -   port
+            -   image_path
