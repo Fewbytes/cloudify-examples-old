@@ -1,0 +1,48 @@
+#######
+# Types and implementation details.
+#
+# Virtual machine is started using Cloudify's built-in OpenStack plugin.
+# Python simple HTTP server is started using Cloudify's Python web server plugin
+# which can be found here: https://github.com/CloudifySource/cosmo-plugin-python-webserver
+#
+
+# cloudify.types contains Cloudify's built-in types, relationships, workflows etc...
+# cloudify.openstack contains Cloudify's built-in openstack types and plugins definitions.
+
+imports:
+    - cloudify.bash
+    - cloudify.openstack
+
+types:
+    web_server:
+        derived_from: cloudify.types.bash.web_server
+        properties:
+            -   port
+
+type_implementations:
+
+    vm_openstack_host_impl:
+        type: cloudify.openstack.server
+        node_ref: vm
+        properties:
+            install_agent: true
+            worker_config:
+                user: ubuntu
+                port: 22
+                key: ~/.ssh/cloudify-agents-kp.pem
+            management_network_name: cloudify-eli-network
+            server:
+                name: elip_web_server
+                flavor_name: standard.xsmall
+                image_name: Ubuntu Precise 12.04 LTS Server 64-bit 20121026 (b)
+                key_name: cloudify-agents-kp
+                security_groups: ['default']
+
+    http_web_server_web_server_impl:
+        type: web_server
+        node_ref: http_web_server
+        properties:
+            scripts:            
+                configure: scripts/configure.sh
+                start: scripts/start.sh
+                stop: scripts/stop.sh
