@@ -21,6 +21,10 @@ types:
 
 type_implementations:
 
+    # Uncomment 'server' below and fill in the place holders 
+    # with the proper configuration. also, make sure worker_config.key matches 
+    # the filename created (or used) during the bootstrap process
+
     vm_openstack_host_impl:
         type: cloudify.openstack.server
         node_ref: vm
@@ -29,14 +33,23 @@ type_implementations:
             worker_config:
                 user: ubuntu
                 port: 22
+                # example for ssh key file (see `key_name` below) 
+                # this file matches the agent key configured during the bootstrap
                 key: ~/.ssh/cloudify-agents-kp.pem
-            management_network_name: cloudify-eli-network
-            server:
-                name: elip_web_server
-                flavor_name: standard.xsmall
-                image_name: Ubuntu Precise 12.04 LTS Server 64-bit 20121026 (b)
-                key_name: cloudify-agents-kp
-                security_groups: ['default']
+            # Uncomment and update `management_network_name` when working a n neutron enabled openstack
+            # management_network_name: cloudify-admin-network
+            #server:
+
+                ### if defined, will serve as the hostname for the started instance,
+                ### otherwise, the node_id will be used
+                #name:             ### HOST_NAME
+
+                # image_name:      ### IMAGE_NAME
+                # flavor_name:     ### FLAVOR_NAME
+                # key_name:        ### KEY_NAME
+
+                ### uncomment this when working with specific security groups
+                # security_groups: ### SECURITY_GROUPS (['default'] or ['cloudify-sg-agents'] etc...)
 
     http_web_server_web_server_impl:
         type: web_server
