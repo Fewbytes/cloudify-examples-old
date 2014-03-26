@@ -18,6 +18,9 @@ types:
         derived_from: cloudify.types.bash.web_server
         properties:
             -   port
+            -   image_path
+            -   index_path
+            -   scripts            
 
 type_implementations:
 
@@ -59,3 +62,5 @@ type_implementations:
                 configure: scripts/configure.sh
                 start: scripts/start.sh
                 stop: scripts/stop.sh
+            image_path: images/cloudify-logo.png
+            index_path: index.html                
