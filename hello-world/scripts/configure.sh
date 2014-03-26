@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . ${CLOUDIFY_LOGGING}
+. ${CLOUDIFY_FILE_SERVER}
 
 TEMP_DIR="/tmp"
 PYTHON_FILE_SERVER_ROOT=${TEMP_DIR}/python-simple-http-webserver
@@ -15,9 +16,9 @@ mkdir -p ${PYTHON_FILE_SERVER_ROOT} || exit $?
 echo "Changing directory to ${PYTHON_FILE_SERVER_ROOT}"
 cd ${PYTHON_FILE_SERVER_ROOT}
 info "Downloading index to web server"
-wget -x -nH ${CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT}/${index_path} || exit $?
+download_resource -x -nH ${index_path} || exit $?
 info "Downloading image to web server"
-wget -x -nH ${CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT}/${image_path} || exit $?
+download_resource -x -nH ${image_path} || exit $?
 
 # Add dynamic data
 
