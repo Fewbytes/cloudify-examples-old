@@ -13,11 +13,34 @@ imports:
     - cloudify.bash
     - cloudify.openstack
 
+types:
+
+    # A web server configured with bash scripts
+    cloudify.types.bash.web_server_with_index_and_image:
+        derived_from: cloudify.types.bash.web_server
+        properties:
+            - image_path
+            - index_path
 
 # The blueprint contains two nodes, a vm and a web server hosted in it.
 blueprint:
     name: hello_world
     nodes:
+        # -   name: virtual_ip
+        #     type: cloudify.openstack.floatingip
+        #     properties:
+        #         floatingip: 
+        #             floating_network_name: Ext-Net
+
+        # -   name: security_group
+        #     type: cloudfiy.openstack.security_group
+        #     properties:
+        #         security_group:
+        #             name: webserver_security_group
+        #         rules:
+        #             -   remote_ip_prefix: 0.0.0.0/0
+        #                 port: 8080            
+
         -   name: vm
             type: cloudify.openstack.server
             instances:
@@ -26,30 +49,24 @@ blueprint:
                 install_agent: true
                 worker_config:
                     user: ubuntu
-                    port: 22
-                    
-                    # example for ssh key file (see `key_name` below) 
-                    # this file matches the agent key configured during the bootstrap                    
+                    port: 22                    
                     key: ~/.ssh/cloudify-agents-kp.pem
-                    
-                    # Uncomment and update `management_network_name` when working a n neutron enabled openstack
-                    # management_network_name: cloudify-admin-network
-                    #server:
-
-                    ### if defined, will serve as the hostname for the started instance,
-                    ### otherwise, the node_id will be used
-                    #name:             ### HOST_NAME
-
-                    # image_name:      ### IMAGE_NAME
-                    # flavor_name:     ### FLAVOR_NAME
-                    # key_name:        ### KEY_NAME
-
-                    ### uncomment this when working with specific security groups
-                    # security_groups: ### SECURITY_GROUPS (['default'] or ['cloudify-sg-agents'] etc...)
+                management_network_name: cloudify-eli-network
+                server:
+                    name: elip-bash-web-server
+                    image: 8c096c29-a666-4b82-99c4-c77dc70cfb40
+                    flavor: 102
+                    key_name: cloudify-agents-kp
+                    security_groups: ['default']
+            # relationships:
+            #     -   type: cloudify.openstack.server_connected_to_floating_ip
+            #         target: virtual_ip
+            #     -   type: cloudify.relationships.connected_to
+            #         target: security_group                    
 
 
         -   name: http_web_server
-            type: cloudify.types.bash.web_server
+            type: cloudify.types.bash.web_server_with_index_and_image
             properties:
                 port: 8080
                 image_path: images/cloudify-logo.png
